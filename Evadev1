@@ -1,0 +1,162 @@
+local gui = Instance.new("ScreenGui")
+gui.Name = "Gui"
+gui.Parent = game.CoreGui
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.2, 0, 0.15, 0)
+button.Position = UDim2.new(0.5, 0, 0.5, 0)
+button.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+button.BorderSizePixel = 1
+button.Text = "Auto Jump Off"
+button.TextSize = 15
+button.BackgroundTransparency = 0 
+button.TextColor3 = Color3.new(1, 1, 1) 
+button.Font = Enum.Font.GothamBold
+button.Draggable = true
+button.Parent = gui
+
+local player = game.Players.LocalPlayer
+local autoJumpEnabled = false
+local jumpingCoroutine
+
+local function getHumanoid()
+    local character = player.Character or player.CharacterAdded:Wait()
+    return character:WaitForChild("Humanoid")
+end
+
+local function toggleAutoJump()
+    autoJumpEnabled = not autoJumpEnabled
+    button.Text = autoJumpEnabled and "Auto Jump On" or "Auto Jump Off"
+    
+    if autoJumpEnabled then
+        -- Start the auto jump loop
+        jumpingCoroutine = coroutine.create(function()
+            local humanoid = getHumanoid()
+            while autoJumpEnabled do
+                wait(0.1)
+                if humanoid:GetState() ~= Enum.HumanoidStateType.Freefall and humanoid:GetState() ~= Enum.HumanoidStateType.Jumping then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+        end)
+        coroutine.resume(jumpingCoroutine)
+    else
+        -- Stop the auto jump loop
+        if jumpingCoroutine then
+            autoJumpEnabled = false -- Stop the loop
+        end
+    end
+end
+
+button.MouseButton1Click:Connect(toggleAutoJump)
+
+-- Reset detection
+player.CharacterAdded:Connect(function()
+    if autoJumpEnabled then
+        toggleAutoJump() -- Update auto jump state when character respawns
+    end
+end)
+
+local button1 = Instance.new("TextButton")
+button1.Size = UDim2.new(0.07, 0, 0.16, 0)
+button1.Position = UDim2.new(0.05, 0, 0.05, 0)
+button1.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+button1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+button1.BorderSizePixel = 2
+button1.Text = "E Dash"
+button1.BackgroundTransparency = 0 
+button1.TextColor3 = Color3.new(1, 1, 1)
+button1.Font = Enum.Font.GothamBold
+button1.TextSize = 10
+button1.Draggable = true
+button1.Parent = gui
+
+button1.MouseButton1Click:Connect(function()
+    -- emote dash script you just have to crouch/slide
+    getgenv().keytoclick = "C"
+    local vim = game:GetService("VirtualInputManager")
+
+    vim:SendKeyEvent(true, keytoclick, false, game) -- Key down
+    wait(99999) -- Adjust wait time as needed
+    vim:SendKeyEvent(false, keytoclick, false, game) -- Key up
+end)
+
+button1.MouseButton1Click:Connect(function()
+    local args = {
+    [1] = 2
+}
+
+game:GetService("Players").LocalPlayer.Character.Equip:InvokeServer(unpack(args))
+
+print("emote pick")
+
+local args = {
+    [1] = "1"
+}
+
+ 
+    game:GetService("ReplicatedStorage").Events.Emote:FireServer(unpack(args))
+end)
+
+local button2 = Instance.new("TextButton")
+button2.Size = UDim2.new(0.045, 0, 0.1, 0)
+button2.Position = UDim2.new(0.938, 0, -0.1, 0)
+button2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+button2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+button2.BorderSizePixel = 2
+button2.Text = "x"
+button2.BackgroundTransparency = 0.5
+button2.TextColor3 = Color3.new(1, 1, 1)
+button2.Font = Enum.Font.GothamBold
+button2.TextSize = 15
+button2.Parent = gui
+
+button2.MouseButton1Click:Connect(function()
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Destroying",
+        Text = "(5)"
+    })
+    wait(5)
+    gui:Destroy()  -- delete gui
+end)
+
+local button3 = Instance.new("TextButton")
+button3.Size = UDim2.new(0.07, 0, 0.16, 0)
+button3.Position = UDim2.new(0.05, 0, 0.3, 0)
+button3.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+button3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+button3.BorderSizePixel = 2
+button3.Text = "crouch"
+button3.BackgroundTransparency = 0 
+button3.TextColor3 = Color3.new(1, 1, 1)
+button3.Font = Enum.Font.GothamBold
+button3.TextSize = 10
+button3.Draggable = true
+button3.Parent = gui
+
+
+button3.MouseButton1Click:Connect(function()
+    getgenv().keytoclick = "C"
+    local vim = game:GetService("VirtualInputManager")
+
+    -- Simulate key press
+    vim:SendKeyEvent(true, keytoclick, false, game) -- Key down
+    wait(99999) -- Adjust wait time as needed
+    vim:SendKeyEvent(false, keytoclick, false, game) -- Key up
+end)
+
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(100, 100)
+Corner.Parent = button1
+
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 8)
+Corner.Parent = button2
+
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(100, 100)
+Corner.Parent = button3
