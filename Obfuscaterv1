@@ -1,0 +1,69 @@
+local gui = Instance.new("ScreenGui")
+gui.Name = "Obfuscater"
+gui.Parent = game.CoreGui
+
+local buu = Instance.new("TextBox")
+buu.Size = UDim2.new(0.3, 0, 0.3, 0)
+buu.Position = UDim2.new(0.5, -75, 0.5, -45)
+buu.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+buu.BorderColor3 = Color3.fromRGB(255, 0, 0)
+buu.BorderSizePixel = 1
+buu.Text = "Enter your script here"
+buu.TextColor3 = Color3.fromRGB(255, 255, 255)
+buu.BackgroundTransparency = 0
+buu.Font = Enum.Font.Code
+buu.TextSize = 15
+buu.ClearTextOnFocus = false
+buu.Draggable = true
+buu.Parent = gui
+
+local bluu = Instance.new("TextButton")
+bluu.Size = UDim2.new(0.3, 0, 0.2, 0)
+bluu.Position = UDim2.new(0.5, -75, 0.6, -20)
+bluu.BackgroundColor3 = Color3.new(0, 0, 0)
+bluu.BorderColor3 = Color3.fromRGB(255, 0, 0)
+bluu.BorderSizePixel = 1
+bluu.Text = "Get Obfuscated"
+bluu.BackgroundTransparency = 0 
+bluu.TextColor3 = Color3.new(255, 255, 255)
+bluu.Font = Enum.Font.Code
+bluu.TextSize = 20
+bluu.Draggable = true
+bluu.Parent = gui
+
+-- Define a mapping of words to their replacements
+local wordReplacements = {
+    ["return"] = "return",
+    ["function"] = "function",
+    ["end"] = "end",
+    ["local"] = "local"
+}
+
+local function replaceWords(str)
+    for word, replacement in pairs(wordReplacements) do
+        str = string.gsub(str, "%f[%w]" .. word .. "%f[^%w]", replacement)  -- Replace whole words only
+    end
+    return str
+end
+
+local function obfuscateString(str)
+    str = replaceWords(str)  -- Replace words before obfuscation
+    local obfuscatedNumbers = {}
+    for i = 1, #str do
+        local char = string.sub(str, i, i)
+        if wordReplacements[char] then
+            table.insert(obfuscatedNumbers, char)  -- Insert the word
+        else
+            table.insert(obfuscatedNumbers, string.byte(char))  -- Get ASCII value
+        end
+    end
+    return table.concat(obfuscatedNumbers, "/")  -- Use "/" as separator
+end
+
+bluu.MouseButton1Click:Connect(function()
+    local inputScript = buu.Text
+    local obfuscatedScript = "loadstring(string.char(" .. obfuscateString(inputScript) .. "))() -- Protected by XOHUB"
+    buu.Text = obfuscatedScript  -- Update the TextBox with the obfuscated script
+    setclipboard(obfuscatedScript)  -- Copy the obfuscated script to the clipboard
+    print("Remember to add protected by XOHUB")
+end)
