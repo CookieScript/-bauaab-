@@ -36,7 +36,16 @@ local wordReplacements = {
     ["return"] = "return",
     ["function"] = "function",
     ["end"] = "end",
-    ["local"] = "local"
+    ["end)"] = "end)",
+    ["local"] = "local",
+    ["if"] = "if",
+    ["then"] = "then",
+    ["else"] = "else",
+    ["elseif"] = "elseif",
+    ["for"] = "for",
+    ["while"] = "while",
+    ["do"] = "do",
+    ["Destroy()"] = "Destroy()"
 }
 
 local function replaceWords(str)
